@@ -1,5 +1,8 @@
 package com.ra.security;
 
+import com.ra.security.jwt.CustomAccessDeniedHandler;
+import com.ra.security.jwt.JwtAuthTokenFilter;
+import com.ra.security.jwt.JwtEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +15,19 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     @Autowired
     private UserDetailService userDetailService;
+    @Autowired
+    private JwtAuthTokenFilter jwtAuthTokenFilter;
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+    @Autowired
+    private JwtEntryPoint jwtEntryPoint;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
@@ -25,9 +35,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth->{
                     auth
                             .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
-                            .requestMatchers("/api/v1/home").permitAll()
+                            .requestMatchers("/api/v1/home","/api/v1/auth/**").permitAll()
                             .anyRequest().authenticated();
                 }).sessionManagement(auth->auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
+                exceptionHandling(auth->auth.authenticationEntryPoint(jwtEntryPoint).accessDeniedHandler(customAccessDeniedHandler)).
+                addFilterAfter(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class).
                 build();
     }
     @Bean
