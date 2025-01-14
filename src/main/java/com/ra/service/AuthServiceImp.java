@@ -2,10 +2,7 @@ package com.ra.service;
 
 import com.ra.model.Role;
 import com.ra.model.User;
-import com.ra.model.dto.UserLoginRequestDTO;
-import com.ra.model.dto.UserLoginResponse;
-import com.ra.model.dto.UserRegisterDTO;
-import com.ra.model.dto.UserRegisterResponseDTO;
+import com.ra.model.dto.*;
 import com.ra.repository.RoleRepository;
 import com.ra.repository.UserRepository;
 import com.ra.security.UserPrinciple;
@@ -64,5 +61,22 @@ public class AuthServiceImp implements AuthService{
         User userNew = userRepository.save(user);
 
         return UserRegisterResponseDTO.builder().username(userNew.getUsername()).build();
+    }
+
+    @Override
+    public UserRegisterResponseDTO updatePermission(UserPermissionDTO userPermissionDTO, Long userId) throws Exception {
+        User user = userRepository.findById(userId).orElseThrow(()->new Exception("User NOT FOUND"));
+        Set<Role> roles = new HashSet<>();
+        for (String roleName: userPermissionDTO.getRoleName()) {
+            Role role = roleRepository.findRoleByRoleName(roleName);
+            roles.add(role);
+        }
+        // cap nhat vai tro moi
+        user.setRoles(roles);
+        User userUpdate = userRepository.save(user);
+        return UserRegisterResponseDTO.builder()
+                .username(userUpdate.getUsername())
+                .roles(userUpdate.getRoles())
+                .build();
     }
 }
