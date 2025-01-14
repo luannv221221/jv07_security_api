@@ -1,6 +1,9 @@
 package com.ra.model.dto;
 
+import com.ra.model.Role;
 import lombok.*;
+
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,5 +14,6 @@ public class UserLoginResponse {
     private String username;
     private String typeToken;
     private String accessToken;
+    private Set<Role> roles;
 
 }

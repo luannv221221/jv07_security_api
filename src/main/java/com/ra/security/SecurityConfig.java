@@ -34,7 +34,8 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(auth->{
                     auth
-                            .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
+                            .requestMatchers("/api/v1/admin/accounts").hasAuthority("ADMIN")
+                            .requestMatchers("/api/v1/admin/blogs").hasAnyAuthority("ADMIN","BLOGGER")
                             .requestMatchers("/api/v1/home","/api/v1/auth/**").permitAll()
                             .anyRequest().authenticated();
                 }).sessionManagement(auth->auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).

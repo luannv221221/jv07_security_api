@@ -40,7 +40,6 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request,response);
     }
-
     // lay token gui len tu request
     public String getTokenFromRequest(HttpServletRequest request){
         String header = request.getHeader("Authorization");
