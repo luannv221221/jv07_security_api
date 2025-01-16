@@ -1,5 +1,6 @@
 package com.ra.model.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @AllArgsConstructor
@@ -8,6 +9,8 @@ import lombok.*;
 @Setter
 @Builder
 public class UserLoginRequestDTO {
+    @NotBlank
     private String username;
+    @NotBlank
     private String password;
 }

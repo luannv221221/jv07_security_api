@@ -40,7 +40,7 @@ public class SecurityConfig {
                             .anyRequest().authenticated();
                 }).sessionManagement(auth->auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
                 exceptionHandling(auth->auth.authenticationEntryPoint(jwtEntryPoint).accessDeniedHandler(customAccessDeniedHandler)).
-                addFilterAfter(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class).
+                addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class).
                 build();
     }
     @Bean

@@ -1,5 +1,6 @@
 package com.ra.service;
 
+import com.ra.exception.CustomException;
 import com.ra.model.Role;
 import com.ra.model.User;
 import com.ra.model.dto.*;
@@ -65,7 +66,7 @@ public class AuthServiceImp implements AuthService{
 
     @Override
     public UserRegisterResponseDTO updatePermission(UserPermissionDTO userPermissionDTO, Long userId) throws Exception {
-        User user = userRepository.findById(userId).orElseThrow(()->new Exception("User NOT FOUND"));
+        User user = userRepository.findById(userId).orElseThrow(()->new CustomException("User NOT FOUND"));
         Set<Role> roles = new HashSet<>();
         for (String roleName: userPermissionDTO.getRoleName()) {
             Role role = roleRepository.findRoleByRoleName(roleName);

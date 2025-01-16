@@ -6,6 +6,7 @@ import com.ra.model.dto.UserLoginResponse;
 import com.ra.model.dto.UserRegisterDTO;
 import com.ra.model.dto.UserRegisterResponseDTO;
 import com.ra.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserLoginRequestDTO requestDTO){
+    public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequestDTO requestDTO){
         UserLoginResponse userLoginResponse = authService.login(requestDTO);
         return new ResponseEntity<>(userLoginResponse, HttpStatus.OK);
     }
