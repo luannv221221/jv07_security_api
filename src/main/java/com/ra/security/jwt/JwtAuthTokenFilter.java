@@ -1,6 +1,7 @@
 package com.ra.security.jwt;
 
 import com.ra.security.UserDetailService;
+import com.ra.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,12 +21,14 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private JwtProvider jwtProvider;
     @Autowired
     private UserDetailService userDetailService;
+    @Autowired
+    private TokenService tokenService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = getTokenFromRequest(request);
 
         try {
-            if(token != null && jwtProvider.validateToken(token)){
+            if(token != null && jwtProvider.validateToken(token) && !tokenService.isTokenInvalidated(token)){
                 String userName = jwtProvider.getUserNameFromToken(token);
                 UserDetails userDetails = userDetailService.loadUserByUsername(userName);
                 if (userDetails != null){
